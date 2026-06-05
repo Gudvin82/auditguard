@@ -1,10 +1,12 @@
 name: Security Audit
 
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+  workflow_dispatch:
+    inputs:
+      url:
+        description: 'URL сайта для аудита (если не задан vars.SITE_URL)'
+        required: false
+        type: string
   schedule:
     - cron: '0 9 * * 1'   # Каждый понедельник 9:00 UTC
 
@@ -14,18 +16,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check SITE_URL
+        run: |
+          URL="${{ inputs.url || vars.SITE_URL }}"
+          if [ -z "$URL" ]; then
+            echo "⚠️  SITE_URL не задан."
+            echo "Добавьте его: Settings → Variables → Actions → New repository variable → SITE_URL = https://ваш-сайт.ru"
+            exit 1
+          fi
+          echo "URL: $URL"
+
       - name: Run AuditGuard Audit
         uses: Gudvin82/auditguard@v1
         with:
-          url: ${{ vars.SITE_URL }}
+          url: ${{ inputs.url || vars.SITE_URL }}
           fail_on_critical: true
 
-      # ─── Загрузка SARIF в GitHub Security ──────────────────────────
-      # - name: Get SARIF report
-      #   run: |
-      #     curl -s "https://auditguard.ru/api/audits/${{ steps.audit.outputs.audit_id }}/sarif" \
-      #       -H "Accept: application/sarif+json" > results.sarif
-      #
+      # ─── Загрузка SARIF в GitHub Security (раскомментировать при необходимости) ──
       # - name: Upload SARIF to GitHub Security
       #   uses: github/codeql-action/upload-sarif@v3
       #   with:
