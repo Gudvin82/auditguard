@@ -1,0 +1,36 @@
+{
+  "name": "auditguard",
+  "version": "1.0.0",
+  "description": "JavaScript/Node.js client for AuditGuard — Technical & Cybersecurity Audit API",
+  "main": "auditguard.cjs.js",
+  "module": "auditguard.js",
+  "exports": {
+    ".": {
+      "import": "./auditguard.js",
+      "require": "./auditguard.cjs.js"
+    }
+  },
+  "type": "module",
+  "files": [
+    "auditguard.js",
+    "auditguard.cjs.js",
+    "auditguard.d.ts",
+    "README.md"
+  ],
+  "keywords": [
+    "security-audit",
+    "cybersecurity",
+    "cve",
+    "tls",
+    "shodan",
+    "auditguard",
+    "compliance"
+  ],
+  "author": "AuditGuard <hello@auditguard.ru>",
+  "license": "Apache-2.0",
+  "homepage": "https://auditguard.ru",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Gudvin82/auditguard.git"
+  }
+}

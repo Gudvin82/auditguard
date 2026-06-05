@@ -1,0 +1,33 @@
+name: Security Audit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '0 9 * * 1'   # Каждый понедельник 9:00 UTC
+
+jobs:
+  security-audit:
+    name: AuditGuard Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Run AuditGuard Audit
+        uses: Gudvin82/auditguard@v1
+        with:
+          url: ${{ vars.SITE_URL }}
+          fail_on_critical: true
+
+      # ─── Загрузка SARIF в GitHub Security ──────────────────────────
+      # - name: Get SARIF report
+      #   run: |
+      #     curl -s "https://auditguard.ru/api/audits/${{ steps.audit.outputs.audit_id }}/sarif" \
+      #       -H "Accept: application/sarif+json" > results.sarif
+      #
+      # - name: Upload SARIF to GitHub Security
+      #   uses: github/codeql-action/upload-sarif@v3
+      #   with:
+      #     sarif_file: results.sarif
+      #   if: always()
