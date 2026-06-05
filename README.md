@@ -36,7 +36,7 @@
 # Запустить аудит
 curl -X POST https://auditguard.ru/api/audits \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com", "agreeToTerms": true, "hasLegalBasis": true}'
+  -d '{"url": "https://example.com", "consentAccepted": true, "legalBasisConfirmed": true}'
 
 # Получить результат (auditId из предыдущего запроса)
 curl https://auditguard.ru/api/audits/{auditId}
@@ -85,8 +85,8 @@ Content-Type: application/json
 {
   "url": "https://example.com",
   "profile": "technical_first",
-  "agreeToTerms": true,
-  "hasLegalBasis": true
+  "consentAccepted": true,
+  "legalBasisConfirmed": true
 }
 ```
 

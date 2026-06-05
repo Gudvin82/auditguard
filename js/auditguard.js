@@ -117,7 +117,7 @@ export class AuditGuard {
   async startAudit(url, profile = 'technical_first') {
     const data = await this._fetch('/audits', {
       method: 'POST',
-      body: JSON.stringify({ url, profile, agreeToTerms: true, hasLegalBasis: true }),
+      body: JSON.stringify({ url, profile, consentAccepted: true, legalBasisConfirmed: true }),
     });
     return data.id;
   }
