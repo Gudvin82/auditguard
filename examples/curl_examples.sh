@@ -10,7 +10,7 @@ BASE="https://auditguard.ru/api"
 echo "=== Запуск аудита ==="
 RESPONSE=$(curl -s -X POST "$BASE/audits" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com", "profile": "technical_first"}')
+  -d '{"url": "https://example.com", "profile": "technical_first", "agreeToTerms": true, "hasLegalBasis": true}')
 
 echo "$RESPONSE"
 AUDIT_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*"' | cut -d'"' -f4)
