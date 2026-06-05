@@ -69,20 +69,33 @@ runs:
           sleep 5
           ELAPSED=$((ELAPSED + 5))
           RESULT=$(curl -sf "$BASE/audits/$AUDIT_ID")
-          STATUS=$(echo "$RESULT" | python3 -c "import sys,json; print(json.load(sys.stdin).get('status',''))")
+          STATUS=$(echo "$RESULT" | python3 -c "
+        import sys,json
+        d=json.load(sys.stdin)
+        print(d.get('lifecycle',{}).get('status','') or d.get('status',''))
+        ")
           echo "  [$ELAPSED s] status: $STATUS"
 
           if [ "$STATUS" = "completed" ]; then
             eval $(echo "$RESULT" | python3 -c "
         import sys, json
+        from collections import Counter
         d = json.load(sys.stdin)
-        s = d.get('summary', {})
-        print(f'GRADE={d.get(\"grade\",\"?\")}')
-        print(f'SCORE={d.get(\"score\",0)}')
-        print(f'CRITICAL={s.get(\"critical\",0)}')
-        print(f'HIGH={s.get(\"high\",0)}')
-        print(f'MEDIUM={s.get(\"medium\",0)}')
-        print(f'LOW={s.get(\"low\",0)}')
+        scores = d.get('scores', {})
+        grade = scores.get('trustGrade', d.get('grade', '?'))
+        score = scores.get('overall', d.get('score', 0))
+        findings = d.get('findings', [])
+        sev = Counter(f.get('severity','?') for f in findings)
+        crit = sev.get('critical', 0)
+        high = sev.get('high', 0)
+        med  = sev.get('medium', 0)
+        low  = sev.get('low', 0)
+        print(f'GRADE={grade}')
+        print(f'SCORE={score}')
+        print(f'CRITICAL={crit}')
+        print(f'HIGH={high}')
+        print(f'MEDIUM={med}')
+        print(f'LOW={low}')
         ")
 
             echo ""
